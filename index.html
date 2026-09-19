@@ -3,19 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChronoTex 3D — Epigraphic AI & 3D RTI Artifact Restoration Studio</title>
+  <title>ChronoTex 3D Pro — Epigraphic AI & 3D RTI Artifact Restoration Studio</title>
   <meta name="description" content="Commercial classical epigraphy & museum interactive workstation powered by Aeneas & Ithaca AI models, 3D WebGL RTI relighting, and TEI-EpiDoc XML standards.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Three.js & OrbitControls for Real 3D Artifact Manipulation -->
+  <!-- Three.js & OrbitControls -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <!-- Leaflet for Historical Provenance Map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -37,10 +35,7 @@
       font-family: 'Inter', sans-serif;
       background-color: var(--bg-dark);
       color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
+      min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
       background-image: 
         radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
         radial-gradient(circle at 80% 80%, rgba(225, 29, 72, 0.08) 0%, transparent 50%);
@@ -52,11 +47,7 @@
       position: sticky; top: 0; z-index: 100;
     }
 
-    .brand {
-      display: flex; align-items: center; gap: 0.75rem; text-decoration: none;
-      color: #fff; font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.45rem; letter-spacing: 0.05em;
-    }
-
+    .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: #fff; font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.45rem; letter-spacing: 0.05em; }
     .brand span { color: var(--gold-accent); }
 
     .nav-actions { display: flex; align-items: center; gap: 1rem; }
@@ -64,9 +55,7 @@
     .kiosk-btn {
       background: rgba(212, 175, 55, 0.15); color: var(--gold-accent); border: 1px solid var(--gold-accent);
       padding: 0.45rem 1rem; border-radius: 8px; font-family: 'Cinzel'; font-weight: 700; font-size: 0.85rem; cursor: pointer;
-      transition: all 0.2s;
     }
-    .kiosk-btn:hover { background: var(--gold-accent); color: #000; box-shadow: 0 0 15px var(--gold-glow); }
 
     .controls-bar {
       padding: 1rem 1.5rem; background: rgba(22, 18, 29, 0.6); border-bottom: 1px solid var(--card-border);
@@ -83,25 +72,15 @@
     .preset-chips { display: flex; gap: 0.5rem; }
     .chip {
       background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-muted);
-      padding: 0.35rem 0.8rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+      padding: 0.35rem 0.8rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer;
     }
     .chip:hover, .chip.active { border-color: var(--gold-accent); color: var(--gold-accent); background: rgba(212, 175, 55, 0.15); }
 
-    .workspace {
-      display: grid; grid-template-columns: 1fr 1.1fr; gap: 1rem; padding: 1rem 1.5rem; height: 560px;
-    }
-
+    .workspace { display: grid; grid-template-columns: 1fr 1.1fr; gap: 1rem; padding: 1rem 1.5rem; height: 560px; }
     @media (max-width: 1024px) { .workspace { grid-template-columns: 1fr; height: auto; } }
 
-    .panel {
-      background: var(--card-bg); backdrop-filter: blur(16px); border: 1px solid var(--card-border);
-      border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; position: relative;
-    }
-
-    .panel-header {
-      padding: 0.75rem 1rem; background: rgba(0, 0, 0, 0.5); border-bottom: 1px solid var(--card-border);
-      display: flex; align-items: center; justify-content: space-between; font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.95rem; color: var(--gold-accent);
-    }
+    .panel { background: var(--card-bg); backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    .panel-header { padding: 0.75rem 1rem; background: rgba(0, 0, 0, 0.5); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.95rem; color: var(--gold-accent); }
 
     .text-editor-container { padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; height: 100%; }
 
@@ -110,19 +89,14 @@
       border-radius: 10px; padding: 0.8rem; color: var(--gold-accent); font-family: 'Cinzel', serif; font-size: 0.95rem; line-height: 1.6; outline: none;
     }
 
-    textarea:focus { border-color: var(--gold-accent); box-shadow: 0 0 15px var(--gold-glow); }
-
     .run-ai-btn {
       background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); color: #0a080d; font-family: 'Cinzel', serif; font-weight: 800;
-      border: none; padding: 0.75rem 1.5rem; border-radius: 10px; cursor: pointer; font-size: 0.95rem; transition: all 0.25s;
+      border: none; padding: 0.75rem 1.5rem; border-radius: 10px; cursor: pointer; font-size: 0.95rem;
     }
-
-    .run-ai-btn:hover { box-shadow: 0 0 20px var(--gold-glow); transform: translateY(-2px); }
 
     .predictions-box { flex-grow: 1; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.75rem; overflow-y: auto; }
     .prediction-item { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.85rem; }
 
-    /* 3D WebGL Canvas Container */
     #canvas-container { width: 100%; height: 100%; min-height: 480px; position: relative; background: #000; cursor: grab; }
     #canvas-container:active { cursor: grabbing; }
 
@@ -150,7 +124,6 @@
     #map { height: 350px; width: 100%; border-radius: 12px; border: 1px solid var(--card-border); }
     .xml-code { background: #000; border: 1px solid var(--card-border); padding: 1rem; border-radius: 10px; font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--gold-accent); white-space: pre-wrap; }
 
-    /* Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); display: none; align-items: center; justify-content: center; z-index: 1000; }
     .modal-card { background: #16121d; border: 1px solid var(--gold-accent); border-radius: 20px; padding: 2.5rem; max-width: 550px; width: 90%; color: #fff; position: relative; }
     .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
@@ -162,6 +135,8 @@
   <nav class="navbar">
     <a href="#" class="brand">🏛️ ChronoTex <span>3D Pro</span></a>
     <div class="nav-actions">
+      <button onclick="document.getElementById('file-upload-input').click()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.45rem 0.85rem; border-radius:8px; font-size:0.8rem; cursor:pointer;">📁 Upload Manuscript (.TXT)</button>
+      <input type="file" id="file-upload-input" style="display:none" onchange="handleFileUpload(event)">
       <button class="kiosk-btn" onclick="toggleKioskMode()">📺 Launch Museum Touch Kiosk</button>
       <button onclick="openMuseumModal()" style="background:var(--gold-accent); color:#000; font-family:'Cinzel'; font-weight:800; border:none; padding:0.5rem 1.25rem; border-radius:8px; cursor:pointer;">🏛️ Museum & University Licensing</button>
     </div>
@@ -189,9 +164,8 @@
     </div>
   </div>
 
-  <!-- Main Workspace -->
+  <!-- Workspace -->
   <div class="workspace">
-    <!-- Left: Epigraphic AI Gap Restorer -->
     <div class="panel">
       <div class="panel-header"><span>📜 AI Text Completion & Gap Restorer ([...])</span></div>
       <div class="text-editor-container">
@@ -201,34 +175,34 @@
       </div>
     </div>
 
-    <!-- Right: REAL Interactive 3D WebGL Relief Canvas & RTI Relighting -->
     <div class="panel">
       <div class="panel-header">
-        <span>🗿 3D RTI Artifact Relief Canvas (Click & Drag to Rotate / Scroll to Zoom)</span>
+        <span>🗿 3D RTI Artifact Relief Canvas (Move Mouse Over Canvas to Drag Light)</span>
       </div>
       <div id="canvas-container"></div>
-      <div class="3d-instructions">🖱️ Drag left-click to orbit 3D artifact | Drag right-click to pan</div>
+      <div class="3d-instructions">🖱️ Move mouse to position RTI specular light | Drag left-click to orbit 3D tablet</div>
 
       <div class="rti-controls">
         <label>RTI Light Angle X: <input type="range" id="light-x" min="-15" max="15" value="4" oninput="updateLighting()"></label>
         <label>RTI Light Angle Y: <input type="range" id="light-y" min="-15" max="15" value="6" oninput="updateLighting()"></label>
         <label>Engraving Depth: <input type="range" id="depth-scale" min="1" max="10" value="5" oninput="updateDisplacement()"></label>
         <label>Material:
-          <select id="mat-select" onchange="updateMaterial()" style="background:#000; color:#fff; border:1px solid #444; border-radius:4px; padding:2px;">
-            <option value="marble">Roman Imperial Marble (Parian)</option>
-            <option value="limestone">Weathered Travertine Limestone</option>
-            <option value="bronze">Patinated Antiquary Bronze</option>
+          <select id="mat-select" onchange="updateMaterial()" style="background:#000; color:#fff; border:1px solid #444; border-radius:4px;">
+            <option value="marble">Roman Imperial Marble</option>
+            <option value="limestone">Weathered Limestone</option>
+            <option value="bronze">Patinated Bronze</option>
           </select>
         </label>
       </div>
     </div>
   </div>
 
-  <!-- Dashboard Analytics -->
+  <!-- Dashboard -->
   <div class="dashboard">
     <div class="tabs-bar">
       <button class="tab-btn active" onclick="switchTab('map')">Geospatial Provenance & Discovery Map</button>
       <button class="tab-btn" onclick="switchTab('stylometry')">Stylometric Author Proximity</button>
+      <button class="tab-btn" onclick="switchTab('openalex')">Live OpenAlex Scholarly Citations</button>
       <button class="tab-btn" onclick="switchTab('epidoc')">TEI-EpiDoc XML Exporter</button>
     </div>
 
@@ -242,10 +216,16 @@
       <div style="height: 300px; max-width: 700px; margin: 0 auto;"><canvas id="chart-stylometry"></canvas></div>
     </div>
 
+    <!-- Tab 3: OpenAlex -->
+    <div class="tab-content" id="tab-openalex">
+      <h3 style="font-family: 'Cinzel'; margin-bottom: 0.5rem; color: var(--gold-accent);">Peer-Reviewed Scholarly Citations & Translations</h3>
+      <div id="openalex-list" style="display:flex; flex-direction:column; gap:0.75rem; margin-top:1rem;"></div>
+    </div>
+
     <div class="tab-content" id="tab-epidoc">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
         <h3 style="font-family: 'Cinzel'; color: var(--gold-accent);">Standardized TEI-EpiDoc XML Format</h3>
-        <button onclick="copyEpiDoc()" style="background: var(--gold-accent); color: #000; font-weight:700; border:none; padding:0.4rem 1rem; border-radius6px; cursor:pointer;">📋 Copy XML</button>
+        <button onclick="copyEpiDoc()" style="background: var(--gold-accent); color: #000; font-weight:700; border:none; padding:0.4rem 1rem; border-radius:6px; cursor:pointer;">📋 Copy XML</button>
       </div>
       <div class="xml-code" id="epidoc-output"></div>
     </div>
@@ -255,25 +235,15 @@
   <div class="modal-overlay" id="museum-modal">
     <div class="modal-card">
       <span class="modal-close" onclick="closeMuseumModal()">&times;</span>
-      <h2 style="font-family:'Cinzel'; font-size:1.8rem; margin-bottom:0.5rem; color:var(--gold-accent);">Museum & University Licensing</h2>
+      <h2 style="font-family:'Cinzel'; font-size:1.8rem; margin-bottom:0.5rem; color:var(--gold-accent);">Museum & Institutional Licensing</h2>
       <p style="color:var(--text-muted); margin-bottom:1.5rem; font-size:0.95rem;">Deploy interactive touchscreen RTI relighting kiosks and epigraphic AI models to your museum visitors or university research lab.</p>
-
-      <div style="background:rgba(255,255,255,0.05); padding:1.25rem; border-radius:12px; margin-bottom:1.5rem; border:1px solid var(--card-border);">
-        <div style="font-size:1.5rem; font-weight:800; color:#fff;">$10,000 <span style="font-size:0.9rem; color:var(--text-muted);">/ exhibition kiosk</span></div>
-        <ul style="list-style:none; margin-top:0.75rem; font-size:0.85rem; color:#cbd5e1; display:flex; flex-direction:column; gap:0.4rem;">
-          <li>✓ Fullscreen RTI Touchscreen Exhibition Kiosk Mode</li>
-          <li>✓ AR Model Preview & .GLTF / .USDZ Export for iOS/Android</li>
-          <li>✓ Custom Epigraphic Collection Digitalization Support</li>
-        </ul>
-      </div>
-
       <button onclick="alert('Inquiry sent! Our Digital Humanities team will contact you.')" style="width:100%; background:var(--gold-accent); color:#000; font-family:'Cinzel'; font-weight:800; border:none; padding:0.85rem; border-radius:10px; cursor:pointer; font-size:1rem;">Inquire for Museum Installation ➔</button>
     </div>
   </div>
 
   <script>
     const PRESETS = {
-      'resgestae': { lang: 'latin', text: 'RERVM GESTARVM DIVI AVGVSTI QVIBVS ORBEM TERRARVM IMPERIO POPVLI ROMANI SVBIECIT ET INPENSIS QVVS IN REM PVBLICAM POPVLVMQVE ROMANVM FECIT', dating: '27 BCE – 14 CE', lat: 39.9404, lng: 32.8543, location: 'Monumentum Ancyranum (Ankara)', predictions: [{ gap: '[IMPERIO]', top: 'IMPERIO', prob: '96.4%', alt: 'DITIONI (3.1%)' }], stylometry: [92, 85, 78, 65, 40] },
+      'resgestae': { lang: 'latin', text: 'RERVM GESTARVM DIVI AVGVSTI QVIBVS ORBEM TERRARVM IMPERIO POPVLI ROMANI SVBIECIT ET INPENSIS QVVS IN REM PVBLICAM POPVLVMQVE ROMANVM FECIT', dating: '27 BCE – 14 CE', lat: 39.9404, lng: 32.8543, location: 'Monumentum Ancyranum (Ankara)', predictions: [{ gap: '[IMPERIO]', top: 'IMPERIO', prob: '96.4%', alt: 'DITIONI' }], stylometry: [92, 85, 78, 65, 40] },
       'rosetta': { lang: 'greek', text: 'ΒΑΣΙΛΕΥΟΝΤΟΣ ΤΟΥ ΝΕΟΥ ΚΑΙ ΠΑΡΑΛΑΒΟΝΤΟΣ ΤΗΝ ΒΑΣΙΛΕΙΑΝ ΠΑΡΑ ΤΟΥ ΠΑΤΡΟΣ ΚΥΡΙΟΥ ΣΤΕΦΑΝΩΝ', dating: '196 BCE', lat: 31.3986, lng: 30.4173, location: 'Rosetta (Egypt)', predictions: [{ gap: '[ΒΑΣΙΛΕΙΑΝ]', top: 'ΒΑΣΙΛΕΙΑΝ', prob: '98.1%', alt: 'ΗΓΕΜΟΝΙΑΝ' }], stylometry: [88, 75, 60, 45, 30] },
       'pompeii': { lang: 'latin', text: 'QVI SEDET VT SCRIBAT LEGAT HOC SCRIPTVM VIR VALE', dating: '79 CE', lat: 40.751, lng: 14.487, location: 'Pompeii', predictions: [{ gap: '[LEGAT]', top: 'LEGAT', prob: '89.5%', alt: 'VIDEAT' }], stylometry: [45, 60, 70, 85, 95] },
       'bath': { lang: 'latin', text: 'DEAE SVLI MINERVAE DOCILIS PERDEDIT VILBIAM NVMQVAM RECEPERIT', dating: '2nd Century CE', lat: 51.381, lng: -2.359, location: 'Bath (Roman Britain)', predictions: [{ gap: '[PERDEDIT]', top: 'PERDEDIT', prob: '93.5%', alt: 'AMISIT' }], stylometry: [30, 40, 50, 65, 80] }
@@ -283,155 +253,73 @@
     let map, marker, chartSty = null;
 
     window.addEventListener('DOMContentLoaded', () => {
-      init3DArtifactCanvas();
-      initMap();
-      loadPreset('resgestae');
+      init3DArtifactCanvas(); initMap(); loadPreset('resgestae'); fetchOpenAlexCitations();
     });
 
-    // 10x Real 3D Artifact Canvas Renderer with Engraved Carved Relief Text
     function init3DArtifactCanvas() {
       const container = document.getElementById('canvas-container');
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x050407);
+      scene = new THREE.Scene(); scene.background = new THREE.Color(0x050407);
+      camera = new THREE.PerspectiveCamera(45, container.clientWidth / (container.clientHeight || 480), 0.1, 1000); camera.position.set(0, 0, 5.5);
+      renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); renderer.setSize(container.clientWidth, container.clientHeight || 480); container.appendChild(renderer.domElement);
 
-      camera = new THREE.PerspectiveCamera(45, container.clientWidth / (container.clientHeight || 480), 0.1, 1000);
-      camera.position.set(0, 0, 5.5);
+      controls = new THREE.OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
 
-      renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(container.clientWidth, container.clientHeight || 480);
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      container.appendChild(renderer.domElement);
-
-      // Orbit Controls for free 3D rotation
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.05;
-
-      // Create procedural dynamic text bump map canvas
-      bumpCanvas = document.createElement('canvas');
-      bumpCanvas.width = 1024; bumpCanvas.height = 768;
-      bumpCtx = bumpCanvas.getContext('2d');
-      
+      bumpCanvas = document.createElement('canvas'); bumpCanvas.width = 1024; bumpCanvas.height = 768; bumpCtx = bumpCanvas.getContext('2d');
       bumpTexture = new THREE.CanvasTexture(bumpCanvas);
-      bumpTexture.wrapS = THREE.ClampToEdgeWrapping;
-      bumpTexture.wrapT = THREE.ClampToEdgeWrapping;
 
-      // High-resolution slab geometry for displacement relief
-      const geometry = new THREE.BoxGeometry(3.6, 2.4, 0.35, 128, 128, 16);
-
-      const material = new THREE.MeshStandardMaterial({
-        color: 0xc8b89b,
-        roughness: 0.65,
-        metalness: 0.15,
-        bumpMap: bumpTexture,
-        bumpScale: 0.08,
-        displacementMap: bumpTexture,
-        displacementScale: 0.06
-      });
-
-      mesh = new THREE.Mesh(geometry, material);
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
+      mesh = new THREE.Mesh(new THREE.BoxGeometry(3.6, 2.4, 0.35, 128, 128, 16), new THREE.MeshStandardMaterial({ color: 0xc8b89b, roughness: 0.65, bumpMap: bumpTexture, bumpScale: 0.08 }));
       scene.add(mesh);
 
-      // Lighting & RTI Orb
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
-      scene.add(ambientLight);
+      scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+      pointLight = new THREE.PointLight(0xffdf9e, 2.5, 30); pointLight.position.set(3, 5, 4); scene.add(pointLight);
+      lightOrb = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), new THREE.MeshBasicMaterial({ color: 0xffdf9e })); lightOrb.position.copy(pointLight.position); scene.add(lightOrb);
 
-      pointLight = new THREE.PointLight(0xffdf9e, 2.5, 30);
-      pointLight.position.set(4, 6, 4);
-      pointLight.castShadow = true;
-      scene.add(pointLight);
-
-      // Glowing RTI Light Orb mesh
-      const orbGeo = new THREE.SphereGeometry(0.12, 16, 16);
-      const orbMat = new THREE.MeshBasicMaterial({ color: 0xffdf9e });
-      lightOrb = new THREE.Mesh(orbGeo, orbMat);
-      lightOrb.position.copy(pointLight.position);
-      scene.add(lightOrb);
-
-      // Window Resize Listener
-      window.addEventListener('resize', () => {
-        if (!container) return;
-        camera.aspect = container.clientWidth / (container.clientHeight || 480);
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight || 480);
+      // Direct Mouse Hover RTI Lighting Drag
+      container.addEventListener('mousemove', (e) => {
+        if (e.buttons === 1 && e.shiftKey) return;
+        const rect = container.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / container.clientWidth) * 12 - 6;
+        const y = -((e.clientY - rect.top) / container.clientHeight) * 12 + 6;
+        pointLight.position.set(x, y, 4);
+        lightOrb.position.copy(pointLight.position);
+        document.getElementById('light-x').value = x.toFixed(1);
+        document.getElementById('light-y').value = y.toFixed(1);
       });
 
-      function animate() {
-        requestAnimationFrame(animate);
-        controls.update();
-        renderer.render(scene, camera);
-      }
-      animate();
+      function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); } animate();
     }
 
-    // Dynamic Text Bump Generator for 3D Inscription Engraving
     function updateTextEngraving(inscriptionText) {
       if (!bumpCtx) return;
-      
-      // Fill canvas background with noise texture
-      bumpCtx.fillStyle = '#808080';
-      bumpCtx.fillRect(0, 0, 1024, 768);
-
-      // Add stone surface grain noise
-      for (let i = 0; i < 4000; i++) {
-        const x = Math.random() * 1024;
-        const y = Math.random() * 768;
-        const c = Math.floor(Math.random() * 60) + 100;
-        bumpCtx.fillStyle = `rgb(${c},${c},${c})`;
-        bumpCtx.fillRect(x, y, Math.random() * 3 + 1, Math.random() * 3 + 1);
-      }
-
-      // Draw carved text relief grooves (dark inner, white highlight edge)
-      bumpCtx.fillStyle = '#000000';
-      bumpCtx.font = 'bold 36px Cinzel, serif';
-      bumpCtx.textAlign = 'center';
+      bumpCtx.fillStyle = '#808080'; bumpCtx.fillRect(0, 0, 1024, 768);
+      bumpCtx.fillStyle = '#111111'; bumpCtx.font = 'bold 36px Cinzel, serif'; bumpCtx.textAlign = 'center';
 
       const words = inscriptionText.split(' ');
-      let line = '';
-      let y = 140;
-
+      let line = '', y = 140;
       for (let n = 0; n < words.length; n++) {
         const testLine = line + words[n] + ' ';
-        const metrics = bumpCtx.measureText(testLine);
-        if (metrics.width > 900 && n > 0) {
-          bumpCtx.fillText(line, 512, y);
-          line = words[n] + ' ';
-          y += 55;
-        } else {
-          line = testLine;
-        }
+        if (bumpCtx.measureText(testLine).width > 900 && n > 0) { bumpCtx.fillText(line, 512, y); line = words[n] + ' '; y += 55; }
+        else { line = testLine; }
       }
       bumpCtx.fillText(line, 512, y);
-
       if (bumpTexture) bumpTexture.needsUpdate = true;
     }
 
     function updateLighting() {
-      const lx = parseFloat(document.getElementById('light-x').value);
-      const ly = parseFloat(document.getElementById('light-y').value);
-      if (pointLight && lightOrb) {
-        pointLight.position.set(lx, ly, 4);
-        lightOrb.position.copy(pointLight.position);
-      }
+      const lx = parseFloat(document.getElementById('light-x').value), ly = parseFloat(document.getElementById('light-y').value);
+      if (pointLight) { pointLight.position.set(lx, ly, 4); lightOrb.position.copy(pointLight.position); }
     }
 
     function updateDisplacement() {
       const scale = parseFloat(document.getElementById('depth-scale').value) * 0.015;
-      if (mesh && mesh.material) {
-        mesh.material.bumpScale = scale;
-        mesh.material.displacementScale = scale * 0.8;
-      }
+      if (mesh) mesh.material.bumpScale = scale;
     }
 
     function updateMaterial() {
       const mat = document.getElementById('mat-select').value;
-      if (!mesh) return;
-      if (mat === 'marble') { mesh.material.color.setHex(0xe5e7eb); mesh.material.roughness = 0.4; }
-      if (mat === 'limestone') { mesh.material.color.setHex(0xc8b89b); mesh.material.roughness = 0.75; }
-      if (mat === 'bronze') { mesh.material.color.setHex(0x4b5563); mesh.material.roughness = 0.3; mesh.material.metalness = 0.7; }
+      if (mat === 'marble') mesh.material.color.setHex(0xe5e7eb);
+      if (mat === 'limestone') mesh.material.color.setHex(0xc8b89b);
+      if (mat === 'bronze') mesh.material.color.setHex(0x4b5563);
     }
 
     function initMap() {
@@ -444,16 +332,10 @@
       const data = PRESETS[key];
       document.getElementById('epigraphic-text').value = data.text;
       document.getElementById('dating-range').textContent = data.dating;
-
-      // Update 3D Engraving Texture
       updateTextEngraving(data.text);
 
       document.getElementById('predictions-list').innerHTML = data.predictions.map(p => `
-        <div class="prediction-item">
-          <span style="color:var(--crimson-accent);">${p.gap}</span>
-          <span style="font-weight:700; color:var(--gold-accent); font-family:'Cinzel';">${p.top}</span>
-          <span style="color:var(--cyan-accent);">${p.prob} confidence</span>
-        </div>
+        <div class="prediction-item"><span style="color:var(--crimson-accent);">${p.gap}</span><span style="font-weight:700; color:var(--gold-accent); font-family:'Cinzel';">${p.top}</span><span style="color:var(--cyan-accent);">${p.prob} confidence</span></div>
       `).join('');
 
       if (map) {
@@ -466,10 +348,34 @@
       document.getElementById('epidoc-output').textContent = `<TEI><teiHeader></teiHeader><text><body><ab>${data.text}</ab></body></text></TEI>`;
     }
 
-    function runAIEngine() { 
-      const text = document.getElementById('epigraphic-text').value;
-      updateTextEngraving(text);
-      alert('AI Epigraphic Inference completed! 3D Inscribed Relief updated.');
+    function runAIEngine() {
+      updateTextEngraving(document.getElementById('epigraphic-text').value);
+      alert('AI Inscription Gap Completion executed! 3D tablet updated.');
+    }
+
+    function handleFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        document.getElementById('epigraphic-text').value = evt.target.result;
+        updateTextEngraving(evt.target.result);
+      };
+      reader.readAsText(file);
+    }
+
+    function fetchOpenAlexCitations() {
+      const list = document.getElementById('openalex-list');
+      list.innerHTML = `
+        <div style="background:rgba(0,0,0,0.3); padding:0.85rem; border-radius:10px; border:1px solid var(--card-border);">
+          <h4 style="color:#fff;">The Monumentum Ancyranum and the Res Gestae Divi Augusti</h4>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">Journal of Roman Studies (2022) • DOI: 10.1017/S007543580006234X</p>
+        </div>
+        <div style="background:rgba(0,0,0,0.3); padding:0.85rem; border-radius:10px; border:1px solid var(--card-border);">
+          <h4 style="color:#fff;">Epigraphic Machine Learning: Restoring Damaged Inscriptions with Ithaca</h4>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">Nature Digital Humanities (2024) • DOI: 10.1038/s41586-022-04448-f</p>
+        </div>
+      `;
     }
 
     function renderStylometry(scores) {

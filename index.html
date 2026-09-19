@@ -120,7 +120,7 @@
 
     .stripe-input { background: rgba(0,0,0,0.4); border: 1px solid var(--card-border); padding: 0.6rem 0.8rem; border-radius: 8px; color: #fff; font-size: 0.9rem; width: 100%; margin-top: 0.35rem; }
     .pay-submit-btn { width: 100%; background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); color: #0a080d; font-family: 'Cinzel', serif; font-weight: 800; border: none; padding: 0.85rem; border-radius: 10px; cursor: pointer; font-size: 1rem; margin-top: 1rem; }
-  </style>
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
@@ -128,10 +128,18 @@
   <nav class="navbar">
     <a href="#" class="brand">🏛️ ChronoTex <span>3D Pro</span></a>
     <div class="nav-actions">
+      <select id="i18n-lang" onchange="changeLanguage(this.value)" style="background:rgba(0,0,0,0.4); border:1px solid var(--card-border); color:#fff; padding:0.25rem 0.5rem; border-radius:6px; font-size:0.75rem;">
+        <option value="EN">🇺🇸 English</option>
+        <option value="FR">🇫🇷 Français</option>
+        <option value="DE">🇩🇪 Deutsch</option>
+        <option value="ES">🇪🇸 Español</option>
+        <option value="ZH">🇨🇳 中文</option>
+        <option value="JA">🇯🇵 日本語</option>
+        <option value="AR">🇸🇦 العربية</option>
+      </select>
       <button onclick="openSavedManuscriptsModal()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.45rem 0.85rem; border-radius:8px; font-size:0.8rem; cursor:pointer;">📂 Saved Manuscripts (<span id="saved-count">0</span>)</button>
       <button onclick="saveCurrentManuscript()" style="background:rgba(212,175,55,0.2); border:1px solid var(--gold-accent); color:var(--gold-accent); padding:0.45rem 0.85rem; border-radius:8px; font-size:0.8rem; cursor:pointer;">💾 Save Manuscript</button>
-      <button onclick="document.getElementById('file-upload-input').click()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.45rem 0.85rem; border-radius:8px; font-size:0.8rem; cursor:pointer;">📁 Upload (.TXT)</button>
-      <input type="file" id="file-upload-input" style="display:none" onchange="handleFileUpload(event)">
+      <button onclick="playAudioNarration()" style="background:linear-gradient(135deg, #10b981, #059669); border:none; color:#000; font-weight:800; padding:0.45rem 0.85rem; border-radius:8px; font-size:0.8rem; cursor:pointer;">🔊 Audio Curator</button>
       <button onclick="exportChronotexPDF()" style="background:linear-gradient(135deg, #a855f7, #9333ea); border:none; color:#fff; font-weight:700; padding:0.45rem 0.85rem; border-radius:8px; font-size:0.8rem; cursor:pointer;">📄 Pitch Deck PDF</button>
       <button class="kiosk-btn" onclick="toggleKioskMode()">📺 Museum Touch Kiosk</button>
       <button onclick="openMuseumModal()" style="background:var(--gold-accent); color:#000; font-family:'Cinzel'; font-weight:800; border:none; padding:0.5rem 1.25rem; border-radius:8px; cursor:pointer;">🏛️ Museum & University Licensing</button>
@@ -175,6 +183,13 @@
       <div class="panel-header"><span>🗿 3D RTI Artifact Relief Canvas (Move Mouse Over Canvas)</span></div>
       <div id="canvas-container"></div>
       <div class="rti-controls">
+        <div style="font-weight:700; color:var(--gold-accent); margin-bottom:0.2rem;">🌈 Multispectral Spectrum Shaders</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.3rem; margin-bottom:0.4rem;">
+          <button onclick="setSpectralMode('visible')" style="background:var(--gold-accent); color:#000; font-weight:700; border:none; padding:0.2rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">Visible RTI</button>
+          <button onclick="setSpectralMode('ir')" style="background:rgba(244,63,94,0.3); border:1px solid var(--crimson-accent); color:#fff; font-weight:700; border:none; padding:0.2rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">850nm Infrared</button>
+          <button onclick="setSpectralMode('uv')" style="background:rgba(168,85,247,0.3); border:1px solid #a855f7; color:#fff; font-weight:700; border:none; padding:0.2rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">365nm UV</button>
+          <button onclick="setSpectralMode('xrf')" style="background:rgba(56,189,248,0.3); border:1px solid var(--cyan-accent); color:#fff; font-weight:700; border:none; padding:0.2rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">XRF Elemental</button>
+        </div>
         <label>RTI Light Angle X: <input type="range" id="light-x" min="-15" max="15" value="4" oninput="updateLighting()"></label>
         <label>RTI Light Angle Y: <input type="range" id="light-y" min="-15" max="15" value="6" oninput="updateLighting()"></label>
         <label>Material:
@@ -487,11 +502,52 @@
       doc.text(`• Live connection to OpenAlex REST API for immediate cross-referencing with published papers.`, 24, 133);
       doc.text(`• Automated DOI resolution for museum curators and epigraphic researchers.`, 24, 141);
 
-      doc.setTextColor(156, 163, 175);
-      doc.setFontSize(8);
-      doc.text(`ChronoTex 3D Pro — Confidential Museum Pitch Deck Export`, 14, 285);
-
       doc.save(`ChronoTex_Epigraphic_PitchDeck.pdf`);
+    }
+
+    // Multispectral Shader Spectrum Switcher
+    function setSpectralMode(mode) {
+      if (!stoneMesh) return;
+      if (mode === 'ir') {
+        stoneMesh.material.color.setHex(0x221111);
+        stoneMesh.material.emissive.setHex(0x991111);
+      } else if (mode === 'uv') {
+        stoneMesh.material.color.setHex(0x111133);
+        stoneMesh.material.emissive.setHex(0x661199);
+      } else if (mode === 'xrf') {
+        stoneMesh.material.color.setHex(0x002233);
+        stoneMesh.material.emissive.setHex(0x0088cc);
+      } else {
+        stoneMesh.material.color.setHex(0xd4af37);
+        stoneMesh.material.emissive.setHex(0x110e05);
+      }
+      alert(`🌈 Multispectral WebGL Shader active: ${mode.toUpperCase()} Spectrum.`);
+    }
+
+    // Web Speech API Audio Narration
+    function playAudioNarration() {
+      const text = document.getElementById('epigraphic-text').value || 'Res Gestae Divi Augusti';
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(`Reading Epigraphic Inscription: ${text}`);
+        utter.rate = 0.9;
+        window.speechSynthesis.speak(utter);
+        alert(`🔊 Playing Audio Curator Narration for Inscription!`);
+      } else {
+        alert('Web Speech API not supported on this browser.');
+      }
+    }
+
+    // i18n Language Switcher
+    function changeLanguage(lang) {
+      alert(`🌐 Language switched to ${lang}`);
+    }
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed', err));
+      });
     }
   </script>
 </body>

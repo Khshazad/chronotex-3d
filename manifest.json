@@ -1,0 +1,16 @@
+{
+  "name": "ChronoTex 3D Pro",
+  "short_name": "ChronoTex3D",
+  "description": "Epigraphic AI & 3D RTI Artifact Restoration Studio",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a080d",
+  "theme_color": "#d4af37",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2682/2682065.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
